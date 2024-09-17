@@ -1,0 +1,162 @@
+const express = require('express');
+const fs =require("fs");
+
+const mongoose=require("mongoose");
+
+
+const users =require('./MOCK_DATA.json');
+const app= express();
+const PORT=8000;
+
+//connection
+
+mongoose.connect("mongodb://127.0.0.1:27017/youtube-app-1")
+.then(()=>{console.log("MongoDb connected")})
+.catch((error)=> console.log("Mongo Error:",error));
+
+//SCHEMA
+
+const userSchema = new mongoose.Schema({
+    firstName:{
+        type:String,
+        required:true,
+    },
+
+    lastName:{
+      type:String,
+      required:false,
+    },
+
+    email:{
+        type:String,
+        required: true,
+        unique:true,
+    },
+   
+    jobtitle:{
+          type:String,
+    },
+
+    gender:{
+        type:String
+    }
+    
+});
+
+const User= mongoose.model("user",userSchema);
+
+
+
+//Middleware - plugin
+app.use(express.urlencoded({extended: false}));
+
+app.use(express.json());
+
+
+
+
+app.listen(PORT,()=>{console.log(`server strted at PORT: ${PORT}`)});
+
+app.get('/api/users',(req,res)=>{
+    return res.json(users);
+})
+
+app.get('/users',(req,res)=>{
+  
+    const html= `
+                <ul>
+                ${users.map((user)=>`<li>${user.first_name}</li>`).join('')}
+
+                </ul>
+                `;
+
+                res.send(html);
+    
+
+});
+
+app.get('/api/users/:id', (req,res)=>{
+    
+    const id =Number(req.params.id);
+    const user = users.find((user)=> user.id === id)
+        
+    return res.json(user);
+
+});
+
+app.post('/api/users', (req,res)=>{
+    
+    let user={};
+    user=req.body;
+    console.log(user);
+    users.push({ ...user,id: users.length+1});
+    fs.writeFile('./MOCK_DATA.json',JSON.stringify(users),(error,data)=>{
+        return res.json({ status:"success",id:users.length,
+            Users:user
+        });
+    })
+    
+});
+
+app.patch('/api/users/:id',(req,res)=>{
+    
+const id=Number(req.params.id);
+const user= users.find((user)=> user.id === id)
+// console.log(user);
+const body =req.body;
+
+console.log(body);
+
+console.log(body.first_name);
+
+if(user){
+   
+    if(body.first_name) user.first_name=body.first_name;
+    if(body.last_name)   user.last_name=body.last_name;
+    if(body.email)   user.email=body.email;
+    if(body.gender)   user.gender=body.gender;
+    if(body.job_title)   user.job_title=body.job_title;
+     
+    fs.writeFile('./MOCK_DATA.json',JSON.stringify(users),(error,data)=>{
+        res.status(200).json({
+        
+            status:"success",
+            data:{
+               users:user
+            } 
+       })
+    })
+
+   
+}});
+app.delete('/api/users/:id',(req,res)=>{
+    //TODO delete THE USER WITH ID
+    
+    const id= Number(req.params.id);
+
+    const user= users.find((user)=>user.id===id);
+
+    console.log(user);
+
+    
+    const index = users.findIndex((user)=>{
+        return (user.id== id)
+    })
+    
+    console.log(index);
+    if(index>=0){
+   
+        users.splice(index,1);
+        fs.writeFile('./MOCK_DATA.json',JSON.stringify(users),(error,data)=>{
+            res.status(200).json({
+            
+                status:"success",
+                data:{
+                   users:user
+                } 
+           })
+        })
+    }    
+    });
+    
+    
