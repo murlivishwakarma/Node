@@ -1,0 +1,42 @@
+[
+    {
+        "first_name": "alex",
+        "last_name": "joe",
+        "email": "alex@gmail.com",
+        "gender": "male",
+        "job-title": "software",
+        "id": 3
+    },
+    {
+        "first_name": "rohit",
+        "last_name": "garg",
+        "email": "rahul@gmail.com",
+        "gender": "male",
+        "job-title": "software dev",
+        "id": 4
+    },
+    {
+        "first_name": "hitesh",
+        "last_name": "chodhary",
+        "email": "hitesh@gmail.com",
+        "gender": "male",
+        "job-title": "software dev",
+        "id": 5
+    },
+    {
+        "first_name": "Murli",
+        "last_name": "Vishwakarma",
+        "email": "murli@gmail.com",
+        "gender": "Male",
+        "job_title": "software dev",
+        "id": 4
+    },
+    {
+        "first_name": "Soni",
+        "last_name": "Soni",
+        "email": "soni@gmail.com",
+        "gender": "Male",
+        "job_title": "Testing dev",
+        "id": 5
+    }
+]
